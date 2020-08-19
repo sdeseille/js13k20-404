@@ -1,5 +1,11 @@
 body {
-  background: black;
+  background: rgb(0, 0, 0);
+}
+h1,h2 {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: x-large;
+  text-align: center;
+  color: darkgreen;
 }
 canvas {
   border: 1px solid white;

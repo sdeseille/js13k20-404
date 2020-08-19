@@ -1,30 +1,79 @@
-let { init, Sprite, GameLoop } = kontra
+let { init, GameLoop, Text, Grid } = kontra
 
-let { canvas } = init();
+let { canvas,context } = init('game');
 
-let sprite = Sprite({
-  x: 100,        // starting x,y position of the sprite
-  y: 80,
-  color: 'gray',  // fill color of the sprite rectangle
-  width: 40,     // width and height of the sprite rectangle
-  height: 20,
-  dx: 0.5          // move the sprite 2px to the right every frame
-});
+let sprites = [];
+function createEAircraft() {
+  let e_aircraft = kontra.Sprite({
+    type: 'e_aircraft',  // we'll use this for collision detection
+    x: 100,
+    y: 100,
+    dx: Math.random() * 4 - 2,
+    radius: 30,
+    render() {
+      console.log(Math.sign(this.dx));
+      if (Math.sign(this.dx) < 0){
+        // draw a left-facing triangle
+        this.context.strokeStyle = 'white';
+        this.context.fillStyle = 'red'
+        this.context.beginPath();
+        this.context.moveTo(-3, -5);
+        this.context.lineTo(-12, 0);
+        this.context.lineTo(3, 0);
+        this.context.closePath();
+        this.context.stroke();
+        this.context.fill();
+      }
+      else{
+        // draw a right-facing triangle
+        this.context.strokeStyle = 'white';
+        this.context.fillStyle = 'navy'
+        this.context.beginPath();
+        this.context.moveTo(-3, -5);
+        this.context.lineTo(12, 0);
+        this.context.lineTo(-3, 5);
+        this.context.closePath();
+        this.context.stroke();
+        this.context.fill();
+      }
+    }
+  });
+  sprites.push(e_aircraft);
+}
+
+for (let i = 0; i < 4; i++) {
+  createEAircraft();
+}
+
+
+// let sprite = Sprite({
+//   x: 100,        // starting x,y position of the sprite
+//   y: 80,
+//   color: 'gray',  // fill color of the sprite rectangle
+//   width: 40,     // width and height of the sprite rectangle
+//   height: 20,
+//   dx: 0.5          // move the sprite 2px to the right every frame
+// });
 
 
 
 let loop = GameLoop({  // create the main game loop
   update: function() { // update the game state
-    sprite.update();
+    sprites.map(sprite => {
+      sprite.update();
+      // asteroid is beyond the left edge
+      if (sprite.x < -sprite.radius) {
+        sprite.x = canvas.width + sprite.radius;
+      }
+      // sprite is beyond the right edge
+      else if (sprite.x > canvas.width + sprite.radius) {
+        sprite.x = 0 - sprite.radius;
+      }
+    });
 
-    // wrap the sprites position when it reaches
-    // the edge of the screen
-    if (sprite.x > canvas.width) {
-      sprite.x = -sprite.width;
-    }
   },
   render: function() { // render the game state
-    sprite.render();
+    sprites.map(sprite => sprite.render());
   }
 });
 
