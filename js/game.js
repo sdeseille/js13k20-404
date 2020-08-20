@@ -2,6 +2,18 @@ let { init, GameLoop, Text, Grid } = kontra
 
 let { canvas,context } = init('game');
 
+let sky = kontra.Sprite({
+  type: 'sky',
+  render(){
+    var gradient = this.context.createLinearGradient(0,0,0,200);
+    gradient.addColorStop(0,"white");
+    gradient.addColorStop(0.5,"blue");
+    gradient.addColorStop(1,"darkblue");
+    this.context.fillStyle = gradient;
+    this.context.fillRect(0,0,canvas.width,canvas.height-50);
+  }
+})
+
 let ground = kontra.Sprite({
   type: 'ground',
   render() {
@@ -82,6 +94,7 @@ let loop = GameLoop({  // create the main game loop
   },
   render: function() { // render the game state
     ground.render();
+    sky.render();
     sprites.map(sprite => sprite.render());
   }
 });
