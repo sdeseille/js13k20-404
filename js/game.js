@@ -2,6 +2,14 @@ let { init, GameLoop, Text, Grid } = kontra
 
 let { canvas,context } = init('game');
 
+let ground = kontra.Sprite({
+  type: 'ground',
+  render() {
+    this.context.fillStyle = 'green';
+    this.context.fillRect(0, canvas.height, canvas.width, -50);
+  }
+});
+
 let sprites = [];
 function createEAircraft() {
   let e_aircraft = kontra.Sprite({
@@ -9,17 +17,17 @@ function createEAircraft() {
     x: 100,
     y: 100,
     dx: Math.random() * 4 - 2,
-    radius: 30,
+    radius: 6,
     render() {
       console.log(Math.sign(this.dx));
       if (Math.sign(this.dx) < 0){
         // draw a left-facing triangle
         this.context.strokeStyle = 'white';
-        this.context.fillStyle = 'red'
+        this.context.fillStyle = 'red';
         this.context.beginPath();
         this.context.moveTo(-3, -5);
-        this.context.lineTo(-12, 0);
-        this.context.lineTo(3, 0);
+        this.context.lineTo(12, -10);
+        this.context.lineTo(12, 0);
         this.context.closePath();
         this.context.stroke();
         this.context.fill();
@@ -27,7 +35,7 @@ function createEAircraft() {
       else{
         // draw a right-facing triangle
         this.context.strokeStyle = 'white';
-        this.context.fillStyle = 'navy'
+        this.context.fillStyle = 'navy';
         this.context.beginPath();
         this.context.moveTo(-3, -5);
         this.context.lineTo(12, 0);
@@ -73,6 +81,7 @@ let loop = GameLoop({  // create the main game loop
 
   },
   render: function() { // render the game state
+    ground.render();
     sprites.map(sprite => sprite.render());
   }
 });
