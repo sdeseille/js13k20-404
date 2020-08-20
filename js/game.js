@@ -5,10 +5,10 @@ let { canvas,context } = init('game');
 let sky = kontra.Sprite({
   type: 'sky',
   render(){
-    var gradient = this.context.createLinearGradient(0,0,0,200);
-    gradient.addColorStop(0,"white");
-    gradient.addColorStop(0.5,"blue");
-    gradient.addColorStop(1,"darkblue");
+    var gradient = this.context.createLinearGradient(0,0,0,canvas.height-50);
+    gradient.addColorStop(0.0,"blue");
+    gradient.addColorStop(0.5,"white");
+    gradient.addColorStop(1.0,"darkblue");
     this.context.fillStyle = gradient;
     this.context.fillRect(0,0,canvas.width,canvas.height-50);
   }
