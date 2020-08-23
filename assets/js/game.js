@@ -1,8 +1,12 @@
-let { init, GameLoop, Text, Grid } = kontra
+let { init, GameLoop, Text, Grid, initKeys, keyPressed } = kontra
 
 let { canvas,context } = init('game');
 
 let flak_gun;
+let flak_gun_base;
+let flak_gun_cannon;
+
+kontra.initKeys();
 
 let sky = kontra.Sprite({
   type: 'sky',
@@ -35,6 +39,43 @@ flak_gun_img.onload = function() {
 
     // required for an image sprite
     image: flak_gun_img
+  });
+};
+
+let flak_gun_cannon_img = new Image();
+flak_gun_cannon_img.src = 'assets/images/british_flak_gun_v2-cannon.png';
+
+flak_gun_cannon_img.onload = function() {
+  flak_gun_cannon = kontra.Sprite({
+    x: 50,
+    y: canvas.height - 65,
+    anchor: {x: 0.25, y: 0.75},
+    rotation: -0.8,
+    // required for an image sprite
+    image: flak_gun_cannon_img,
+    update (){
+      if (keyPressed('left')){
+        this.rotation += kontra.degToRad(-1);
+        console.log('keyPressed Left');
+      } else if (keyPressed('right')){
+        this.rotation += kontra.degToRad(1);
+        console.log('keyPressed Right');
+      }
+    }
+  });
+};
+
+let flak_gun_base_img = new Image();
+flak_gun_base_img.src = 'assets/images/british_flak_gun_v2-base.png';
+
+flak_gun_base_img.onload = function() {
+  flak_gun_base = kontra.Sprite({
+    x: 50,
+    y: canvas.height - 60,
+    anchor: {x: 0.5, y: 0.5},
+
+    // required for an image sprite
+    image: flak_gun_base_img
   });
 };
 
@@ -95,6 +136,7 @@ for (let i = 0; i < 4; i++) {
 
 let loop = GameLoop({  // create the main game loop
   update: function() { // update the game state
+    flak_gun_cannon.update();
     sprites.map(sprite => {
       sprite.update();
       // asteroid is beyond the left edge
@@ -106,12 +148,12 @@ let loop = GameLoop({  // create the main game loop
         sprite.x = 0 - sprite.radius;
       }
     });
-
   },
   render: function() { // render the game state
     ground.render();
     sky.render();
-    flak_gun.render();
+    flak_gun_base.render();
+    flak_gun_cannon.render();
     sprites.map(sprite => sprite.render());
   }
 });
