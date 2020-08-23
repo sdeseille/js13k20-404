@@ -50,16 +50,40 @@ flak_gun_cannon_img.onload = function() {
     x: 50,
     y: canvas.height - 65,
     anchor: {x: 0.25, y: 0.75},
-    rotation: -0.8,
+    dt: 0,  // track how much time has passed
+    rotation: 0,
     // required for an image sprite
     image: flak_gun_cannon_img,
     update (){
-      if (keyPressed('left')){
+      if (keyPressed('left') && this.rotation >= -0.8){
         this.rotation += kontra.degToRad(-1);
-        console.log('keyPressed Left');
-      } else if (keyPressed('right')){
+        console.log('Current rotation: ' + this.rotation + 'keyPressed Left');
+      } else if (keyPressed('right') && this.rotation <= 0.8){
         this.rotation += kontra.degToRad(1);
-        console.log('keyPressed Right');
+        console.log('Current rotation: ' + this.rotation + 'keyPressed Right');
+      } else {
+        // have to adjust angle because the sprite already have an angle
+        const cos = Math.cos(this.rotation - kontra.degToRad(45));
+        const sin = Math.sin(this.rotation - kontra.degToRad(45));
+        this.ddx = this.ddy = 0;
+
+        // allow the player to fire no more than 1 bullet every 1/4 second
+        this.dt += 1/60;
+        if (keyPressed('space') && this.dt > 0.25) {
+          this.dt = 0;      
+          let bullet = kontra.Sprite({
+            color: 'white',        // start the bullet at the end of the cannon
+            x: this.x + cos * 12,
+            y: this.y + sin * 12,
+            dx: this.dx + cos * 5,
+            dy: this.dy + sin * 5,
+            ttl: 150,     // live only 150 frames
+            radius: 2,    // bullets are small
+            width: 2,
+            height: 2
+          });
+          sprites.push(bullet);
+        }
       }
     }
   });
@@ -148,6 +172,7 @@ let loop = GameLoop({  // create the main game loop
         sprite.x = 0 - sprite.radius;
       }
     });
+    sprites = sprites.filter(sprite => sprite.isAlive());
   },
   render: function() { // render the game state
     ground.render();
