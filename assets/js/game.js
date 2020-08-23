@@ -2,12 +2,14 @@ let { init, GameLoop, Text, Grid } = kontra
 
 let { canvas,context } = init('game');
 
+let flak_gun;
+
 let sky = kontra.Sprite({
   type: 'sky',
   render(){
     var gradient = this.context.createLinearGradient(0,0,0,200);
-    gradient.addColorStop(0,"white");
-    gradient.addColorStop(0.5,"blue");
+    gradient.addColorStop(0,"blue");
+    gradient.addColorStop(0.5,"white");
     gradient.addColorStop(1,"darkblue");
     this.context.fillStyle = gradient;
     this.context.fillRect(0,0,canvas.width,canvas.height-50);
@@ -17,10 +19,24 @@ let sky = kontra.Sprite({
 let ground = kontra.Sprite({
   type: 'ground',
   render() {
-    this.context.fillStyle = 'green';
+    this.context.fillStyle = 'forestgreen';
     this.context.fillRect(0, canvas.height, canvas.width, -50);
   }
 });
+
+let flak_gun_img = new Image();
+flak_gun_img.src = 'assets/images/british_flak_gun_minis.png';
+
+flak_gun_img.onload = function() {
+  flak_gun = kontra.Sprite({
+    x: 50,
+    y: canvas.height - 70,
+    anchor: {x: 0.5, y: 0.5},
+
+    // required for an image sprite
+    image: flak_gun_img
+  });
+};
 
 let sprites = [];
 function createEAircraft() {
@@ -31,7 +47,7 @@ function createEAircraft() {
     dx: Math.random() * 4 - 2,
     radius: 6,
     render() {
-      console.log(Math.sign(this.dx));
+      //console.log(Math.sign(this.dx));
       if (Math.sign(this.dx) < 0){
         // draw a left-facing triangle
         this.context.strokeStyle = 'white';
@@ -95,6 +111,7 @@ let loop = GameLoop({  // create the main game loop
   render: function() { // render the game state
     ground.render();
     sky.render();
+    flak_gun.render();
     sprites.map(sprite => sprite.render());
   }
 });
