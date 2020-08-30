@@ -172,6 +172,25 @@ let loop = GameLoop({  // create the main game loop
         sprite.x = 0 - sprite.radius;
       }
     });
+
+    // collision detection
+    for (let i = 0; i < sprites.length; i++) {    // only check for collision against e_aircraft
+      if (sprites[i].type === 'e_aircraft') {
+        for (let j = 0; j < sprites.length; j++) {        // don't check e_aircraft vs. e_aircraft collisions
+          if (sprites[j].type !== 'e_aircraft') {
+            let aircraft = sprites[i];
+            let sprite = sprites[j];          // circle vs. circle collision detection
+            let dx = aircraft.x - sprite.x;
+            let dy = aircraft.y - sprite.y;          if (Math.hypot(dx, dy) < aircraft.radius + sprite.radius) {
+              aircraft.ttl = 0;
+              sprite.ttl = 0;
+              break;
+            }
+          }
+        }
+      }
+    }
+
     sprites = sprites.filter(sprite => sprite.isAlive());
   },
   render: function() { // render the game state
