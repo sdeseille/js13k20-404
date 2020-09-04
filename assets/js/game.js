@@ -5,6 +5,7 @@ let { canvas,context } = init('game');
 let flak_gun;
 let flak_gun_base;
 let flak_gun_cannon;
+let numberOfTicks = 0;
 
 kontra.initKeys();
 
@@ -110,7 +111,7 @@ function createEAircraft() {
     x: 100,
     y: 100,
     dx: Math.random() * 4 - 2,
-    radius: 6,
+    radius: 4,
     render() {
       //console.log(Math.sign(this.dx));
       if (Math.sign(this.dx) < 0){
@@ -147,27 +148,23 @@ for (let i = 0; i < 4; i++) {
 }
 
 
-// let sprite = Sprite({
-//   x: 100,        // starting x,y position of the sprite
-//   y: 80,
-//   color: 'gray',  // fill color of the sprite rectangle
-//   width: 40,     // width and height of the sprite rectangle
-//   height: 20,
-//   dx: 0.5          // move the sprite 2px to the right every frame
-// });
-
-
 
 let loop = GameLoop({  // create the main game loop
   update: function() { // update the game state
     flak_gun_cannon.update();
     sprites.map(sprite => {
+      if (sprite.type === 'e_aircraft') {
+        //console.log("sprite = e_aircraft");
+        sprite.y = 100 + ( 50 * Math.sin((sprite.x + sprite.dx * Math.PI)/40) );
+        //console.log("sprite.y:" + sprite.y);
+      }
       sprite.update();
-      // asteroid is beyond the left edge
+
+      // aircraft is beyond the left edge
       if (sprite.x < -sprite.radius) {
         sprite.x = canvas.width + sprite.radius;
       }
-      // sprite is beyond the right edge
+      // aircraft is beyond the right edge
       else if (sprite.x > canvas.width + sprite.radius) {
         sprite.x = 0 - sprite.radius;
       }
@@ -181,7 +178,8 @@ let loop = GameLoop({  // create the main game loop
             let aircraft = sprites[i];
             let sprite = sprites[j];          // circle vs. circle collision detection
             let dx = aircraft.x - sprite.x;
-            let dy = aircraft.y - sprite.y;          if (Math.hypot(dx, dy) < aircraft.radius + sprite.radius) {
+            let dy = aircraft.y - sprite.y;          
+            if (Math.hypot(dx, dy) < aircraft.radius + sprite.radius) {
               aircraft.ttl = 0;
               sprite.ttl = 0;
               break;
