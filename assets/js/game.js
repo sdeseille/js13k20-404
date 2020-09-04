@@ -154,9 +154,9 @@ let loop = GameLoop({  // create the main game loop
     flak_gun_cannon.update();
     sprites.map(sprite => {
       if (sprite.type === 'e_aircraft') {
-        console.log("sprite = e_aircraft");
+        //console.log("sprite = e_aircraft");
         sprite.y = 100 + ( 50 * Math.sin((sprite.x + sprite.dx * Math.PI)/40) );
-        console.log("sprite.y:" + sprite.y);
+        //console.log("sprite.y:" + sprite.y);
       }
       sprite.update();
 
