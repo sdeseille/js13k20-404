@@ -143,7 +143,7 @@ function createEAircraft() {
   sprites.push(e_aircraft);
 }
 
-for (let i = 0; i < 4; i++) {
+for (let i = 0; i < 6; i++) {
   createEAircraft();
 }
 
